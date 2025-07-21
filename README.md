@@ -5,7 +5,7 @@ Repositório do grupo 3
 primeiro, cheque as versões do java e maven para se casar com o que temos atualmente
 
 ```
-Java = 17
+Java = 21
 Maven = 3.8.7
 ```
 Configuração:
