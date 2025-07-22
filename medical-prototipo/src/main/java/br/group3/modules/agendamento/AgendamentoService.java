@@ -58,7 +58,7 @@ public class AgendamentoService {
         Optional<Medico> medicoOptional = medicoRepository.findById(agendamentoDTO.getIdMedico());
 
         if (pacienteOptional.isEmpty() || medicoOptional.isEmpty()) {
-            return null; // Ou lançar uma exceção específica
+            return null;
         }
 
         Agendamento agendamento = new Agendamento();
@@ -108,20 +108,18 @@ public class AgendamentoService {
             agendamento.setMotivo(agendamentoDTO.getMotivo());
             agendamento.setStatus(agendamentoDTO.getStatus());
 
-            // Atualiza paciente se o ID for diferente do atual
-            if (!agendamento.getPaciente().getIdPaciente().equals(agendamentoDTO.getIdPaciente())) {
+             if (!agendamento.getPaciente().getIdPaciente().equals(agendamentoDTO.getIdPaciente())) {
                 Optional<Paciente> novoPacienteOptional = pacienteRepository.findById(agendamentoDTO.getIdPaciente());
                 if (novoPacienteOptional.isEmpty()) {
-                    return null; // Novo paciente não encontrado
+                    return null;
                 }
                 agendamento.setPaciente(novoPacienteOptional.get());
             }
 
-            // Atualiza médico se o ID for diferente do atual
-            if (!agendamento.getMedico().getIdMedico().equals(agendamentoDTO.getIdMedico())) {
+             if (!agendamento.getMedico().getIdMedico().equals(agendamentoDTO.getIdMedico())) {
                 Optional<Medico> novoMedicoOptional = medicoRepository.findById(agendamentoDTO.getIdMedico());
                 if (novoMedicoOptional.isEmpty()) {
-                    return null; // Novo médico não encontrado
+                    return null;
                 }
                 agendamento.setMedico(novoMedicoOptional.get());
             }

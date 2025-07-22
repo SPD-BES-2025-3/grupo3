@@ -52,7 +52,7 @@ public class AgendamentoController {
         if (novoAgendamento != null) {
             return ResponseEntity.status(HttpStatus.CREATED).body(novoAgendamento);
         }
-        return ResponseEntity.badRequest().build(); // Ou um status mais específico como 404 para entidades não encontradas
+        return ResponseEntity.badRequest().build();
     }
 
     /**
