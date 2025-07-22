@@ -1,7 +1,7 @@
 package br.group3.paciente;
 
 import br.group3.modules.paciente.Paciente;
-import br.group3.modules.paciente.PacienteRepository;
+import br.group3.modules.paciente.IPacienteRepository;
 import br.group3.modules.paciente.PacienteService;
 import br.group3.modules.paciente.PacienteDTO;
 
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.*;
 public class PacienteServiceTeste {
 
     @Mock
-    private PacienteRepository pacienteRepository;
+    private IPacienteRepository IPacienteRepository;
 
     @InjectMocks
     private PacienteService pacienteService;
@@ -56,37 +56,37 @@ public class PacienteServiceTeste {
     @Test
     @DisplayName("Deve salvar um novo paciente com sucesso")
     void deveSalvarPacienteComSucesso() {
-        when(pacienteRepository.save(any(Paciente.class))).thenReturn(pacienteExemplo);
+        when(IPacienteRepository.save(any(Paciente.class))).thenReturn(pacienteExemplo);
 
         Paciente pacienteSalvo = pacienteService.salvarPaciente(pacienteDTOExemplo);
 
         assertNotNull(pacienteSalvo);
         assertEquals(pacienteExemplo.getNomeCompleto(), pacienteSalvo.getNomeCompleto());
         assertEquals(pacienteExemplo.getIdPaciente(), pacienteSalvo.getIdPaciente());
-        verify(pacienteRepository, times(1)).save(any(Paciente.class));
+        verify(IPacienteRepository, times(1)).save(any(Paciente.class));
     }
 
     @Test
     @DisplayName("Deve buscar paciente por ID existente")
     void deveBuscarPacientePorIdExistente() {
-        when(pacienteRepository.findById(1L)).thenReturn(Optional.of(pacienteExemplo));
+        when(IPacienteRepository.findById(1L)).thenReturn(Optional.of(pacienteExemplo));
 
         Optional<Paciente> pacienteEncontrado = pacienteService.buscarPacientePorId(1L);
 
         assertTrue(pacienteEncontrado.isPresent());
         assertEquals(pacienteExemplo.getNomeCompleto(), pacienteEncontrado.get().getNomeCompleto());
-        verify(pacienteRepository, times(1)).findById(1L);
+        verify(IPacienteRepository, times(1)).findById(1L);
     }
 
     @Test
     @DisplayName("Não deve encontrar paciente por ID inexistente")
     void naoDeveEncontrarPacientePorIdInexistente() {
-        when(pacienteRepository.findById(99L)).thenReturn(Optional.empty());
+        when(IPacienteRepository.findById(99L)).thenReturn(Optional.empty());
 
         Optional<Paciente> pacienteEncontrado = pacienteService.buscarPacientePorId(99L);
 
         assertFalse(pacienteEncontrado.isPresent());
-        verify(pacienteRepository, times(1)).findById(99L);
+        verify(IPacienteRepository, times(1)).findById(99L);
     }
 
     @Test
@@ -97,13 +97,13 @@ public class PacienteServiceTeste {
                 new Paciente(2L, "Pedro Costa", LocalDate.of(1992, 1, 1),
                         "11122233344", "Rua B, 456", "77777777777")
         );
-        when(pacienteRepository.findAll()).thenReturn(pacientes);
+        when(IPacienteRepository.findAll()).thenReturn(pacientes);
 
         List<Paciente> listaRetornada = pacienteService.listarTodosPacientes();
 
         assertFalse(listaRetornada.isEmpty());
         assertEquals(2, listaRetornada.size());
-        verify(pacienteRepository, times(1)).findAll();
+        verify(IPacienteRepository, times(1)).findAll();
     }
 
     @Test
@@ -115,40 +115,40 @@ public class PacienteServiceTeste {
 
         Paciente pacienteAntigo = new Paciente(1L, "João da Silva", LocalDate.of(1990, 5, 15),
                 "12345678901", "Rua A, 123", "99999999999");
-        when(pacienteRepository.findById(1L)).thenReturn(Optional.of(pacienteAntigo));
+        when(IPacienteRepository.findById(1L)).thenReturn(Optional.of(pacienteAntigo));
 
         Paciente pacienteAtualizadoRetorno = new Paciente(1L, "João da Silva Atualizado", LocalDate.of(1990, 5, 15),
                 "12345678901", "Rua A, 123 - Novo", "99999999999");
-        when(pacienteRepository.save(any(Paciente.class))).thenReturn(pacienteAtualizadoRetorno);
+        when(IPacienteRepository.save(any(Paciente.class))).thenReturn(pacienteAtualizadoRetorno);
 
         Paciente resultadoAtualizacao = pacienteService.atualizarPaciente(1L, pacienteDTOAtualizado);
 
         assertNotNull(resultadoAtualizacao);
         assertEquals("João da Silva Atualizado", resultadoAtualizacao.getNomeCompleto());
         assertEquals("Rua A, 123 - Novo", resultadoAtualizacao.getEndereco());
-        verify(pacienteRepository, times(1)).findById(1L);
-        verify(pacienteRepository, times(1)).save(any(Paciente.class));
+        verify(IPacienteRepository, times(1)).findById(1L);
+        verify(IPacienteRepository, times(1)).save(any(Paciente.class));
     }
 
     @Test
     @DisplayName("Não deve atualizar paciente inexistente")
     void naoDeveAtualizarPacienteInexistente() {
-        when(pacienteRepository.findById(99L)).thenReturn(Optional.empty());
+        when(IPacienteRepository.findById(99L)).thenReturn(Optional.empty());
 
         Paciente resultadoAtualizacao = pacienteService.atualizarPaciente(99L, pacienteDTOExemplo);
 
         assertNull(resultadoAtualizacao);
-        verify(pacienteRepository, times(1)).findById(99L);
-        verify(pacienteRepository, never()).save(any(Paciente.class));
+        verify(IPacienteRepository, times(1)).findById(99L);
+        verify(IPacienteRepository, never()).save(any(Paciente.class));
     }
 
     @Test
     @DisplayName("Deve deletar paciente com sucesso")
     void deveDeletarPacienteComSucesso() {
-        doNothing().when(pacienteRepository).deleteById(1L);
+        doNothing().when(IPacienteRepository).deleteById(1L);
 
         pacienteService.deletarPaciente(1L);
 
-        verify(pacienteRepository, times(1)).deleteById(1L);
+        verify(IPacienteRepository, times(1)).deleteById(1L);
     }
 }
