@@ -36,7 +36,20 @@ mvn archetype:generate \
 ```
 
 
+## Diagrama de componentes atual
+<td align="center">
+      <img src="diagramas/Diagrama de Componentes Correto.jpg" alt="(a)" width="100%" /><br/>
 
+
+## Diagrama de sequencia atual
+<td align="center">
+      <img src="diagramas/Diagrama de Sequencia.drawio 2 .png" alt="(a)" width="100%" /><br/>
+
+
+## Diagrama de classes atual
+
+<td align="center">
+      <img src="diagramas/Diagrama de classes 2 .png" alt="(a)" width="100%" /><br/>
 
 
 
