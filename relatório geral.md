@@ -51,10 +51,11 @@ O objetivo geral deste projeto é desenvolver um sistema de gerenciamento para c
 
 ### Tecnologias utilizadas:
 
-- **Backend:** Spring Boot (Java) com ORM e PostgreSQL
-- **ODM:** Python com Flask e MongoDB
-- **Comunicação:** Redis como intermediador entre Java e Python
-- **Frontend:** FXML (JavaFX)
+- **Backend:** Java com Spring Boot utilizando ORM para persistência dos dados estruturados em PostgreSQL (relacional)
+- **ODM:** Python com Flask utilizando MongoDB para armazenamento de documentos médicos (NoSQL)
+- **Comunicação:** Redis como intermediador entre os módulos desenvolvidos em Java e Python
+- **Frontend:** Interface gráfica desenvolvida em FXML (JavaFX)
+
 
 ---
 
