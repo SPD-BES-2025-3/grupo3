@@ -49,7 +49,8 @@ mvn archetype:generate \
 ## Diagrama de classes atual
 
 <td align="center">
-      <img src="diagramas/Diagrama de classes 3 .png" alt="(a)" width="100%" /><br/>
+      <img src="diagramas/Diagrama de classes 4.png" alt="(a)" width="100%" /><br/>
+      
 
 
 
