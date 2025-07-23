@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.ConsultaController"
+            prefHeight="600.0" prefWidth="800.0">
+   <children>
+      <SplitPane orientation="VERTICAL" dividerPositions="0.6"
+                 AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                 AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <items>
+ 
+            <AnchorPane>
+               <children>
+                  <Pane AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <children>
+                        <Label layoutX="50.0" layoutY="20.0" text="Cadastro de Consulta">
+                           <font>
+                              <Font size="18.0"/>
+                           </font>
+                        </Label>
+
+                        <Label layoutX="50.0" layoutY="70.0" text="ID"/>
+                        <TextField fx:id="idField" layoutX="200.0" layoutY="65.0"
+                                   editable="false" disable="true"/>
+
+                        <Label layoutX="50.0" layoutY="110.0" text="Médico"/>
+                        <ComboBox fx:id="medicoComboBox" layoutX="200.0" layoutY="105.0" prefWidth="250.0"/>
+
+                        <Label layoutX="50.0" layoutY="150.0" text="Paciente"/>
+                        <ComboBox fx:id="pacienteComboBox" layoutX="200.0" layoutY="145.0" prefWidth="250.0"/>
+
+                        <Label layoutX="50.0" layoutY="190.0" text="Data e Hora"/>
+                        <DatePicker fx:id="dataPicker" layoutX="200.0" layoutY="185.0"/>
+                        <TextField fx:id="horaField" layoutX="350.0" layoutY="185.0" promptText="HH:mm"/>
+
+                        <Label layoutX="50.0" layoutY="230.0" text="Observações"/>
+                        <TextField fx:id="observacoesField" layoutX="200.0" layoutY="225.0" prefWidth="400.0"/>
+
+                        <Label layoutX="50.0" layoutY="270.0" text="Realizada"/>
+                        <CheckBox fx:id="realizadaCheckBox" layoutX="200.0" layoutY="265.0"/>
+
+                        <Button fx:id="adicionarButton" layoutX="50.0" layoutY="320.0"
+                                mnemonicParsing="false" text="Adicionar"
+                                onAction="#onAdicionar"/>
+                        <Button fx:id="atualizarButton" layoutX="150.0" layoutY="320.0"
+                                mnemonicParsing="false" text="Atualizar"
+                                onAction="#onAtualizar" disable="true"/>
+                        <Button fx:id="deletarButton" layoutX="250.0" layoutY="320.0"
+                                mnemonicParsing="false" text="Deletar"
+                                onAction="#onDeletar" disable="true"/>
+                        <Button fx:id="cancelarButton" layoutX="350.0" layoutY="320.0"
+                                mnemonicParsing="false" text="Cancelar"
+                                onAction="#onCancelar" disable="true"/>
+                        <Button fx:id="salvarButton" layoutX="450.0" layoutY="320.0"
+                                mnemonicParsing="false" text="Salvar"
+                                onAction="#onSalvar" disable="true"/>
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+
+ 
+            <AnchorPane>
+               <children>
+                  <TableView fx:id="tabela"
+                             AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                             AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <columns>
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="50.0"/>
+                        <TableColumn fx:id="medicoCol" text="Médico" prefWidth="150.0"/>
+                        <TableColumn fx:id="pacienteCol" text="Paciente" prefWidth="150.0"/>
+                        <TableColumn fx:id="dataHoraCol" text="Data e Hora" prefWidth="150.0"/>
+                        <TableColumn fx:id="realizadaCol" text="Realizada" prefWidth="100.0"/>
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

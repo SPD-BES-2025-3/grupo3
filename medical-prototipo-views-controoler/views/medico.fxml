@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MedicoController">
+   <children>
+      <SplitPane orientation="VERTICAL" dividerPositions="0.5" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <items>
+
+            <AnchorPane>
+               <children>
+                  <Pane prefHeight="300.0" prefWidth="800.0">
+                     <children>
+                        <Label layoutX="50.0" layoutY="20.0" text="Cadastro de Médico">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+
+                        <Label layoutX="50.0" layoutY="70.0" text="ID" />
+                        <TextField fx:id="idField" layoutX="200.0" layoutY="65.0" editable="false" disable="true" />
+
+                        <Label layoutX="50.0" layoutY="110.0" text="Nome" />
+                        <TextField fx:id="nomeField" layoutX="200.0" layoutY="105.0" />
+
+                        <Label layoutX="50.0" layoutY="150.0" text="CRM" />
+                        <TextField fx:id="crmField" layoutX="200.0" layoutY="145.0" />
+
+                        <Label layoutX="50.0" layoutY="190.0" text="Especialidade" />
+                        <TextField fx:id="especialidadeField" layoutX="200.0" layoutY="185.0" />
+
+                        <Label layoutX="50.0" layoutY="230.0" text="Email" />
+                        <TextField fx:id="emailField" layoutX="200.0" layoutY="225.0" />
+
+                        <Button fx:id="adicionarButton" layoutX="50.0" layoutY="270.0" text="Adicionar" onAction="#onAdicionar" />
+                        <Button fx:id="atualizarButton" layoutX="150.0" layoutY="270.0" text="Atualizar" onAction="#onAtualizar" disable="true" />
+                        <Button fx:id="deletarButton" layoutX="250.0" layoutY="270.0" text="Deletar" onAction="#onDeletar" disable="true" />
+                        <Button fx:id="cancelarButton" layoutX="350.0" layoutY="270.0" text="Cancelar" onAction="#onCancelar" disable="true" />
+                        <Button fx:id="salvarButton" layoutX="450.0" layoutY="270.0" text="Salvar" onAction="#onSalvar" disable="true" />
+                     </children>
+                  </Pane>
+               </children>
+            </AnchorPane>
+
+            <AnchorPane>
+               <children>
+                  <TableView fx:id="tabela" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+                     <columns>
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="50.0" />
+                        <TableColumn fx:id="nomeCol" text="Nome" prefWidth="150.0" />
+                        <TableColumn fx:id="crmCol" text="CRM" prefWidth="100.0" />
+                        <TableColumn fx:id="especialidadeCol" text="Especialidade" prefWidth="150.0" />
+                        <TableColumn fx:id="emailCol" text="Email" prefWidth="200.0" />
+                     </columns>
+                  </TableView>
+               </children>
+            </AnchorPane>
+
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
