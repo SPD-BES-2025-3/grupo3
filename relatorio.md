@@ -62,7 +62,7 @@ O objetivo geral deste projeto é desenvolver um sistema de gerenciamento para c
 
 A equipe foi organizada em dois grupos principais, conforme a afinidade com as etapas do projeto e as competências individuais.
 
-### Ana Carolyne e Brena
+### Ana Carolyne e Brenna
 
 - **Seção 1 - Introdução**: desenvolvimento da justificativa, descrição do problema, motivação e demais aspectos introdutórios do projeto;
 - **Seção 2 - Plano**: elaboração do objetivo geral e dos objetivos específicos, bem como a definição das tecnologias e ferramentas que serão utilizadas no desenvolvimento do sistema;
