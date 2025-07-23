@@ -57,3 +57,21 @@ O objetivo geral deste projeto é desenvolver um sistema de gerenciamento para c
 - **Frontend:** FXML (JavaFX)
 
 ---
+
+## 4. Divisão de Tarefas
+
+A equipe foi organizada em dois grupos principais, conforme a afinidade com as etapas do projeto e as competências individuais.
+
+### Ana Carolyne e Brenna
+
+- **Seção 1 - Introdução**: desenvolvimento da justificativa, descrição do problema, motivação e demais aspectos introdutórios do projeto;
+- **Seção 2 - Plano**: elaboração do objetivo geral e dos objetivos específicos, bem como a definição das tecnologias e ferramentas que serão utilizadas no desenvolvimento do sistema;
+- **Seção 3 - Divisão de tarefas**: organização das atividades do grupo, detalhamento das tarefas (*issues*), atribuição de responsabilidades, prazos e cronograma de execução;
+- **Seção 4 - Modelagem inicial**: construção do diagrama de classes com as relações entre os objetos (1:1, 1:N, N:M), definição da arquitetura do sistema por meio de um diagrama de componentes e elaboração de diagramas de sequência para representar operações de integração entre partes do sistema.
+
+### Matheus, Maurício e Marcos
+
+- **Seção 5 - Documentação de código inicial**: preparação do ambiente com instruções sobre como instalar, executar e testar o código inicial do sistema; criação da documentação do código utilizando *JavaDoc* e *Markdown*, assegurando clareza e organização para futuros desenvolvedores;
+- **Seção 6 - Testes Unitários**: elaboração dos testes unitários utilizando o framework *JUnit*, com foco nas classes de domínio, repositórios e demais partes essenciais do código-fonte.
+
+Essa divisão busca garantir o equilíbrio na carga de trabalho e o aproveitamento das habilidades técnicas e analíticas de cada integrante, promovendo a colaboração eficiente entre todos os membros da equipe.
