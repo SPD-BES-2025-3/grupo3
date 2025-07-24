@@ -10,7 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import view.Paciente;
-import view.PacienteDTO; 
+import view.PacienteDTO;
+import view.ErrorResponse;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,8 +21,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class PacienteController implements Initializable {
 
@@ -111,11 +114,11 @@ public class PacienteController implements Initializable {
     @FXML
     private void onSalvar() {
         try {
-            PacienteDTO pacienteDtoParaAPI;  
+            PacienteDTO pacienteDtoParaAPI;
             HttpRequest request;
 
             if (isAdding) {
-                 pacienteDtoParaAPI = new PacienteDTO(
+                pacienteDtoParaAPI = new PacienteDTO(
                     nomeCompletoField.getText(),
                     dataNascimentoPicker.getValue(),
                     cpfField.getText(),
@@ -129,15 +132,13 @@ public class PacienteController implements Initializable {
                         .POST(HttpRequest.BodyPublishers.ofString(json))
                         .build();
             } else {
-                // Para atualização, precisamos do ID do paciente selecionado
                 Paciente selectedPaciente = tabela.getSelectionModel().getSelectedItem();
                 if (selectedPaciente == null || selectedPaciente.getId() == 0) {
                     exibirAlerta(Alert.AlertType.ERROR, "Erro", "Selecione um paciente para atualizar ou o ID é inválido.");
                     return;
                 }
-                // Cria um PacienteDTO com o ID para a atualização (PUT)
                 pacienteDtoParaAPI = new PacienteDTO(
-                    Long.valueOf(selectedPaciente.getId()), // Converte o ID da view para Long
+                    Long.valueOf(selectedPaciente.getId()),
                     nomeCompletoField.getText(),
                     dataNascimentoPicker.getValue(),
                     cpfField.getText(),
@@ -162,7 +163,31 @@ public class PacienteController implements Initializable {
                 desabilitarBotoes(false, true, true, true, true);
                 isAdding = false;
             } else {
-                exibirAlerta(Alert.AlertType.ERROR, "Erro", "Erro ao salvar paciente: " + response.body());
+                String errorMessage = "Erro desconhecido ao salvar paciente.";
+                if (response.body() != null && !response.body().isEmpty()) {
+                    try {
+                        ErrorResponse errorResponse = objectMapper.readValue(response.body(), ErrorResponse.class);
+                        if (errorResponse.getErrors() != null && !errorResponse.getErrors().isEmpty()) {
+                            // CORREÇÃO APLICADA AQUI: Quebrar mensagens de erro em novas linhas
+                            errorMessage = "Erros de Validação:\n" +
+                                           errorResponse.getErrors().entrySet().stream()
+                                                   .map(entry -> {
+                                                        return "- " + entry.getKey() + ": " + entry.getValue().replace("; ", "\n- ");
+                                                   })
+                                                   .collect(Collectors.joining("\n"));
+                            exibirAlerta(Alert.AlertType.ERROR, "Erro de Validação", errorMessage);
+                            return;
+                        } else if (errorResponse.getMessage() != null && !errorResponse.getMessage().isEmpty()) {
+                            errorMessage = errorResponse.getMessage();
+                        } else if (errorResponse.getError() != null && !errorResponse.getError().isEmpty()) {
+                            errorMessage = "Erro: " + errorResponse.getError();
+                        }
+                    } catch (IOException eJson) {
+                        errorMessage = "Erro ao salvar paciente. Resposta do servidor: " + response.body();
+                        System.err.println("Erro ao parsear JSON de erro: " + eJson.getMessage());
+                    }
+                }
+                exibirAlerta(Alert.AlertType.ERROR, "Erro", errorMessage);
             }
 
         } catch (IOException | InterruptedException e) {
@@ -171,6 +196,7 @@ public class PacienteController implements Initializable {
             exibirAlerta(Alert.AlertType.ERROR, "Erro de Entrada", "ID inválido. Certifique-se de que é um número.");
         } catch (Exception e) {
             exibirAlerta(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro ao salvar o paciente: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -212,7 +238,21 @@ public class PacienteController implements Initializable {
                         desabilitarCampos(true);
                         desabilitarBotoes(false, true, true, true, true);
                     } else {
-                        exibirAlerta(Alert.AlertType.ERROR, "Erro", "Erro ao excluir paciente: " + response.body());
+                        String errorMessage = "Erro desconhecido ao excluir paciente.";
+                        if (response.body() != null && !response.body().isEmpty()) {
+                            try {
+                                ErrorResponse errorResponse = objectMapper.readValue(response.body(), ErrorResponse.class);
+                                if (errorResponse.getMessage() != null && !errorResponse.getMessage().isEmpty()) {
+                                    errorMessage = errorResponse.getMessage();
+                                } else if (errorResponse.getError() != null && !errorResponse.getError().isEmpty()) {
+                                    errorMessage = "Erro: " + errorResponse.getError();
+                                }
+                            } catch (IOException eJson) {
+                                errorMessage = "Erro ao excluir paciente. Resposta do servidor: " + response.body();
+                                System.err.println("Erro ao parsear JSON de erro na deleção: " + eJson.getMessage());
+                            }
+                        }
+                        exibirAlerta(Alert.AlertType.ERROR, "Erro", errorMessage);
                     }
                 } catch (IOException | InterruptedException e) {
                     exibirAlerta(Alert.AlertType.ERROR, "Erro de Conexão", "Não foi possível conectar à API: " + e.getMessage());
@@ -245,14 +285,27 @@ public class PacienteController implements Initializable {
                 ObservableList<Paciente> pacientes = FXCollections.observableArrayList(Arrays.asList(pacientesArray));
                 tabela.setItems(pacientes);
             } else {
-                exibirAlerta(Alert.AlertType.ERROR, "Erro ao Carregar", "Erro ao carregar pacientes: " + response.body());
+                String errorMessage = "Erro desconhecido ao carregar pacientes.";
+                if (response.body() != null && !response.body().isEmpty()) {
+                    try {
+                        ErrorResponse errorResponse = objectMapper.readValue(response.body(), ErrorResponse.class);
+                        if (errorResponse.getMessage() != null && !errorResponse.getMessage().isEmpty()) {
+                            errorMessage = errorResponse.getMessage();
+                        } else if (errorResponse.getError() != null && !errorResponse.getError().isEmpty()) {
+                            errorMessage = "Erro: " + errorResponse.getError();
+                        }
+                    } catch (IOException eJson) {
+                        errorMessage = "Erro ao carregar pacientes. Resposta do servidor: " + response.body();
+                        System.err.println("Erro ao parsear JSON de erro no carregamento: " + eJson.getMessage());
+                    }
+                }
+                exibirAlerta(Alert.AlertType.ERROR, "Erro ao Carregar", errorMessage);
             }
         } catch (IOException | InterruptedException e) {
             exibirAlerta(Alert.AlertType.ERROR, "Erro de Conexão", "Não foi possível conectar à API: " + e.getMessage());
         }
     }
 
- 
     private void preencherCampos(Paciente pac) {
         idField.setText(String.valueOf(pac.getId()));
         nomeCompletoField.setText(pac.getNomeCompleto());

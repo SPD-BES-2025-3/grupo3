@@ -10,7 +10,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import view.Medico;
-import view.MedicoDTO; 
+import view.MedicoDTO;
+import view.ErrorResponse; // Importar a classe ErrorResponse
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,6 +22,7 @@ import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors; // Importar Collectors
 
 public class MedicoController implements Initializable {
 
@@ -161,7 +163,31 @@ public class MedicoController implements Initializable {
                 desabilitarBotoes(false, true, true, true, true);
                 isAdding = false;
             } else {
-                exibirAlerta(Alert.AlertType.ERROR, "Erro", "Erro ao salvar médico: " + response.body());
+                String errorMessage = "Erro desconhecido ao salvar médico.";
+                if (response.body() != null && !response.body().isEmpty()) {
+                    try {
+                        ErrorResponse errorResponse = objectMapper.readValue(response.body(), ErrorResponse.class);
+                        if (errorResponse.getErrors() != null && !errorResponse.getErrors().isEmpty()) {
+                            // CORREÇÃO APLICADA AQUI: Quebrar mensagens de erro em novas linhas
+                            errorMessage = "Erros de Validação:\n" +
+                                           errorResponse.getErrors().entrySet().stream()
+                                                   .map(entry -> {
+                                                        return "- " + entry.getKey() + ": " + entry.getValue().replace("; ", "\n- ");
+                                                   })
+                                                   .collect(Collectors.joining("\n"));
+                            exibirAlerta(Alert.AlertType.ERROR, "Erro de Validação", errorMessage);
+                            return;
+                        } else if (errorResponse.getMessage() != null && !errorResponse.getMessage().isEmpty()) {
+                            errorMessage = errorResponse.getMessage();
+                        } else if (errorResponse.getError() != null && !errorResponse.getError().isEmpty()) {
+                            errorMessage = "Erro: " + errorResponse.getError();
+                        }
+                    } catch (IOException eJson) {
+                        errorMessage = "Erro ao salvar médico. Resposta do servidor: " + response.body();
+                        System.err.println("Erro ao parsear JSON de erro: " + eJson.getMessage());
+                    }
+                }
+                exibirAlerta(Alert.AlertType.ERROR, "Erro", errorMessage);
             }
 
         } catch (IOException | InterruptedException e) {
@@ -170,6 +196,7 @@ public class MedicoController implements Initializable {
             exibirAlerta(Alert.AlertType.ERROR, "Erro de Entrada", "ID inválido. Certifique-se de que é um número.");
         } catch (Exception e) {
             exibirAlerta(Alert.AlertType.ERROR, "Erro", "Ocorreu um erro ao salvar o médico: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -211,7 +238,21 @@ public class MedicoController implements Initializable {
                         desabilitarCampos(true);
                         desabilitarBotoes(false, true, true, true, true);
                     } else {
-                        exibirAlerta(Alert.AlertType.ERROR, "Erro", "Erro ao excluir médico: " + response.body());
+                        String errorMessage = "Erro desconhecido ao excluir médico.";
+                        if (response.body() != null && !response.body().isEmpty()) {
+                            try {
+                                ErrorResponse errorResponse = objectMapper.readValue(response.body(), ErrorResponse.class);
+                                if (errorResponse.getMessage() != null && !errorResponse.getMessage().isEmpty()) {
+                                    errorMessage = errorResponse.getMessage();
+                                } else if (errorResponse.getError() != null && !errorResponse.getError().isEmpty()) {
+                                    errorMessage = "Erro: " + errorResponse.getError();
+                                }
+                            } catch (IOException eJson) {
+                                errorMessage = "Erro ao excluir médico. Resposta do servidor: " + response.body();
+                                System.err.println("Erro ao parsear JSON de erro na deleção: " + eJson.getMessage());
+                            }
+                        }
+                        exibirAlerta(Alert.AlertType.ERROR, "Erro", errorMessage);
                     }
                 } catch (IOException | InterruptedException e) {
                     exibirAlerta(Alert.AlertType.ERROR, "Erro de Conexão", "Não foi possível conectar à API: " + e.getMessage());
@@ -244,7 +285,21 @@ public class MedicoController implements Initializable {
                 ObservableList<Medico> medicos = FXCollections.observableArrayList(Arrays.asList(medicosArray));
                 tabela.setItems(medicos);
             } else {
-                exibirAlerta(Alert.AlertType.ERROR, "Erro ao Carregar", "Erro ao carregar médicos: " + response.body());
+                String errorMessage = "Erro desconhecido ao carregar médicos.";
+                if (response.body() != null && !response.body().isEmpty()) {
+                    try {
+                        ErrorResponse errorResponse = objectMapper.readValue(response.body(), ErrorResponse.class);
+                        if (errorResponse.getMessage() != null && !errorResponse.getMessage().isEmpty()) {
+                            errorMessage = errorResponse.getMessage();
+                        } else if (errorResponse.getError() != null && !errorResponse.getError().isEmpty()) {
+                            errorMessage = "Erro: " + errorResponse.getError();
+                        }
+                    } catch (IOException eJson) {
+                        errorMessage = "Erro ao carregar médicos. Resposta do servidor: " + response.body();
+                        System.err.println("Erro ao parsear JSON de erro no carregamento: " + eJson.getMessage());
+                    }
+                }
+                exibirAlerta(Alert.AlertType.ERROR, "Erro ao Carregar", errorMessage);
             }
         } catch (IOException | InterruptedException e) {
             exibirAlerta(Alert.AlertType.ERROR, "Erro de Conexão", "Não foi possível conectar à API: " + e.getMessage());
