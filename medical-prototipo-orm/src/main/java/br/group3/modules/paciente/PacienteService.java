@@ -80,6 +80,7 @@ public class PacienteService {
             Paciente paciente = pacienteExistente.get();
             paciente.setNomeCompleto(pacienteDTO.getNomeCompleto());
             paciente.setDataNascimento(pacienteDTO.getDataNascimento());
+            paciente.setCpf(pacienteDTO.getCpf());
             paciente.setEndereco(pacienteDTO.getEndereco());
             paciente.setTelefone(pacienteDTO.getTelefone());
 

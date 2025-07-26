@@ -22,10 +22,8 @@
                         <Label layoutX="50.0" layoutY="70.0" text="ID" />
                         <TextField fx:id="idField" layoutX="200.0" layoutY="65.0" editable="false" disable="true" />
 
-                        <Label layoutX="50.0" layoutY="110.0" text="Nome" />
-                        <TextField fx:id="nomeField" layoutX="200.0" layoutY="105.0" />
-
-                        <Label layoutX="50.0" layoutY="150.0" text="CRM" />
+                        <Label layoutX="50.0" layoutY="110.0" text="Nome Completo" />
+                        <TextField fx:id="nomeCompletoField" layoutX="200.0" layoutY="105.0" /> <Label layoutX="50.0" layoutY="150.0" text="CRM" />
                         <TextField fx:id="crmField" layoutX="200.0" layoutY="145.0" />
 
                         <Label layoutX="50.0" layoutY="190.0" text="Especialidade" />
@@ -34,12 +32,7 @@
                         <Label layoutX="50.0" layoutY="230.0" text="Email" />
                         <TextField fx:id="emailField" layoutX="200.0" layoutY="225.0" />
 
-                        <Button fx:id="adicionarButton" layoutX="50.0" layoutY="270.0" text="Adicionar" onAction="#onAdicionar" />
-                        <Button fx:id="atualizarButton" layoutX="150.0" layoutY="270.0" text="Atualizar" onAction="#onAtualizar" disable="true" />
-                        <Button fx:id="deletarButton" layoutX="250.0" layoutY="270.0" text="Deletar" onAction="#onDeletar" disable="true" />
-                        <Button fx:id="cancelarButton" layoutX="350.0" layoutY="270.0" text="Cancelar" onAction="#onCancelar" disable="true" />
-                        <Button fx:id="salvarButton" layoutX="450.0" layoutY="270.0" text="Salvar" onAction="#onSalvar" disable="true" />
-                     </children>
+                        <Label layoutX="50.0" layoutY="270.0" text="Telefone" /> <TextField fx:id="telefoneField" layoutX="200.0" layoutY="265.0" /> <Button fx:id="adicionarButton" layoutX="50.0" layoutY="310.0" text="Adicionar" onAction="#onAdicionar" /> <Button fx:id="atualizarButton" layoutX="150.0" layoutY="310.0" text="Atualizar" onAction="#onAtualizar" disable="true" /> <Button fx:id="deletarButton" layoutX="250.0" layoutY="310.0" text="Deletar" onAction="#onDeletar" disable="true" /> <Button fx:id="cancelarButton" layoutX="350.0" layoutY="310.0" text="Cancelar" onAction="#onCancelar" disable="true" /> <Button fx:id="salvarButton" layoutX="450.0" layoutY="310.0" text="Salvar" onAction="#onSalvar" disable="true" /> </children>
                   </Pane>
                </children>
             </AnchorPane>
@@ -53,11 +46,10 @@
                         <TableColumn fx:id="crmCol" text="CRM" prefWidth="100.0" />
                         <TableColumn fx:id="especialidadeCol" text="Especialidade" prefWidth="150.0" />
                         <TableColumn fx:id="emailCol" text="Email" prefWidth="200.0" />
-                     </columns>
+                        <TableColumn fx:id="telefoneCol" text="Telefone" prefWidth="100.0" /> </columns>
                   </TableView>
                </children>
             </AnchorPane>
-
          </items>
       </SplitPane>
    </children>
