@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from services.consulta_services import ConsultaService
-from dtos.consulta_dto import ConsultaCreateDTO, ConsultaUpdateDTO # Importe os DTOs
+from dto.consulta_dto import ConsultaCreateDTO, ConsultaUpdateDTO # Importe os DTOs
 from pydantic import ValidationError # Importe ValidationError do Pydantic
 
 consulta_bp = Blueprint('consulta_bp', __name__, url_prefix='/consultas')
