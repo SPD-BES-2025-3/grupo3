@@ -1,7 +1,7 @@
 from models.prontuario import Prontuario, Exame # Importa o modelo Prontuario e Exame
 from repositories.prontuario_repository import ProntuarioRepository # Importa o novo repositório
 from datetime import datetime # Importa datetime para tratamento de datas se necessário
-
+from typing import List, Optional
 class ProntuarioService:
     
     @staticmethod
@@ -39,5 +39,3 @@ class ProntuarioService:
     def deletar_prontuario(idProntuario: int) -> int:
         """Deleta um prontuário."""
         return ProntuarioRepository.delete(idProntuario) # Usa o repositório para deletar
-
-from typing import List, Optional
