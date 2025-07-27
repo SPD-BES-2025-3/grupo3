@@ -1,5 +1,5 @@
-from models.prontuario import Prontuario # Importa o modelo Prontuario
-
+from models.prontuario import Prontuario 
+from typing import List, Optional
 class ProntuarioRepository:
     """
     Classe de Repositório para a entidade Prontuario.
@@ -39,4 +39,3 @@ class ProntuarioRepository:
         """
         return Prontuario.objects(idProntuario=idProntuario).delete() #
 
-from typing import List, Optional
