@@ -1,4 +1,5 @@
-from models.consulta import Consulta # Importa o modelo Consulta
+from models.consulta import Consulta 
+from typing import List, Optional
 
 class ConsultaRepository:
     """
@@ -39,4 +40,3 @@ class ConsultaRepository:
         """
         return Consulta.objects(idConsulta=idConsulta).delete() #
 
-from typing import List, Optional
