@@ -1,6 +1,6 @@
 from models.consulta import Consulta
 from repositories.consulta_repository import ConsultaRepository # Importa o novo repositório
-
+from typing import List, Optional
 class ConsultaService:
 
     @staticmethod
@@ -30,4 +30,3 @@ class ConsultaService:
         """Deleta uma consulta."""
         return ConsultaRepository.delete(idConsulta) # Usa o repositório para deletar
 
-from typing import List, Optional
