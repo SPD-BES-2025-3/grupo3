@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from services.prontuario_services import ProntuarioService
-from dtos.prontuario_dto import ProntuarioCreateDTO, ProntuarioUpdateDTO # Importe os DTOs
+from dto.prontuario_dto import ProntuarioCreateDTO, ProntuarioUpdateDTO # Importe os DTOs
 from pydantic import ValidationError
 
 prontuario_bp = Blueprint('prontuario_bp', __name__, url_prefix='/prontuarios')
