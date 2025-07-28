@@ -1,0 +1,57 @@
+# Arquivos e pastas a serem ignorados pelo Docker
+
+# Ambientes virtuais Python
+venv/
+env/
+.venv/
+.env/
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.temp
+
+# Dados do MongoDB local (se existirem)
+data/
+mongodb_data/
+
+# Arquivos de configuração local
+.env.local
+src/config.local.py
+
+# Documentação gerada
+docs/_build/
+
+# Arquivos de teste (opcional - remova se quiser incluir os testes no container)
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Git
+.git/
+.gitignore
+
+# Arquivos específicos do projeto que não devem ir para o container
+README.md
+*.md
+

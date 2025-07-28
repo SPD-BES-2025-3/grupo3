@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: medical_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 1234
+      MONGO_INITDB_DATABASE: medical_db
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - medical_network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: medical_backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=production
+      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/medical_db?authSource=admin
+      - PYTHONPATH=/app:/app/src
+    depends_on:
+      - mongodb
+    volumes:
+      # Monta o diretório atual (que contém src/) no container
+      - .:/app
+    working_dir: /app
+    networks:
+      - medical_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  medical_network:
+    driver: bridge
