@@ -3,3 +3,4 @@ mongoengine
 pydantic
 PyQt5
 requests
+flask-cors
