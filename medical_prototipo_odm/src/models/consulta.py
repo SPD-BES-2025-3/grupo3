@@ -78,7 +78,7 @@ class Consulta(Document):
     def to_json(self):
         return {
             "idConsulta": self.idConsulta,
-            "dataHora": self.dataHora.strftime("%Y-%m-%d %H:%M:%S"),
+            "dataHora": self.dataHora.strftime("%Y-%m-%d %H:%M:%S") if isinstance(self.dataHora, datetime) else self.dataHora,
             "motivo": self.motivo,
             "idMedico": self.idMedico,
             "idPaciente": self.idPaciente,
