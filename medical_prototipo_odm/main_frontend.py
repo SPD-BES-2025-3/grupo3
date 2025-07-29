@@ -41,7 +41,7 @@ class MainApp(QWidget):
         # Área de saída comum para ambas as abas
         self.text_output = QTextEdit(self)
         self.text_output.setReadOnly(True)
-        self.text_output.setMaximumHeight(200)
+        self.text_output.setMaximumHeight(400)
         main_layout.addWidget(QLabel("Saída:"))
         main_layout.addWidget(self.text_output)
 
@@ -64,6 +64,7 @@ class MainApp(QWidget):
         criar_layout.addRow("Motivo:", self.consulta_motivo_input)
         
         self.consulta_datahora_input = QLineEdit()
+        # Corrigido: Usar timespec para isoformat
         self.consulta_datahora_input.setPlaceholderText(f"Data e Hora (Ex: {datetime.now().strftime("%Y-%m-%dT%H:%M:%S")})")
         self.consulta_datahora_input.setText(datetime.now().isoformat(timespec='seconds'))
         criar_layout.addRow("Data e Hora:", self.consulta_datahora_input)
@@ -146,6 +147,7 @@ class MainApp(QWidget):
         criar_layout.addRow("ID do Prontuário:", self.prontuario_id_input)
         
         self.prontuario_datacriacao_input = QLineEdit()
+        # Corrigido: Usar timespec para isoformat
         self.prontuario_datacriacao_input.setPlaceholderText(f"Data de Criação (Ex: {datetime.now().strftime("%Y-%m-%dT%H:%M:%S")})")
         self.prontuario_datacriacao_input.setText(datetime.now().isoformat(timespec='seconds'))
         criar_layout.addRow("Data de Criação:", self.prontuario_datacriacao_input)
@@ -281,8 +283,8 @@ class MainApp(QWidget):
             if response.status_code == 201:
                 self._display_message("Sucesso", "Consulta criada com sucesso!")
                 self.text_output.setText(f"Consulta Criada:\n{json.dumps(response.json(), indent=2)}")
-                # Limpa os campos após sucesso
                 self._clear_consulta_fields()
+                self.listar_consultas() # Adicionado: Chama a função de listar após criar
             else:
                 self._display_message("Erro", f"Erro ao criar consulta: {response.text}", is_error=True)
 
@@ -292,7 +294,7 @@ class MainApp(QWidget):
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
             error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
+            if 'response' in locals():
                 try:
                     error_json = response.json()
                     error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
@@ -330,6 +332,7 @@ class MainApp(QWidget):
                 self._display_message("Sucesso", "Consulta atualizada com sucesso!")
                 self.text_output.setText(f"Consulta Atualizada:\n{json.dumps(response.json(), indent=2)}")
                 self._clear_consulta_crud_fields()
+                self.listar_consultas() # Adicionado: Chama a função de listar após atualizar
             else:
                 self._display_message("Erro", f"Erro ao atualizar consulta: {response.text}", is_error=True)
 
@@ -339,7 +342,7 @@ class MainApp(QWidget):
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
             error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
+            if 'response' in locals():
                 try:
                     error_json = response.json()
                     error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
@@ -354,24 +357,62 @@ class MainApp(QWidget):
         self.text_output.clear()
         try:
             id_consulta = int(self.consulta_id_crud_input.text())
-            
+
             response = requests.delete(f"{BASE_URL}/consultas/{id_consulta}")
             response.raise_for_status()
 
             if response.status_code == 200:
                 self._display_message("Sucesso", "Consulta deletada com sucesso!")
-                self.text_output.setText(f"Consulta Deletada (ID: {id_consulta})")
+                self.text_output.setText(f"Consulta Deletada: ID {id_consulta}")
                 self._clear_consulta_crud_fields()
+                self.listar_consultas() # Adicionado: Chama a função de listar após deletar
             else:
                 self._display_message("Erro", f"Erro ao deletar consulta: {response.text}", is_error=True)
 
-        except ValueError as e:
-            self._display_message("Erro de Entrada", f"ID da Consulta inválido: {e}", is_error=True)
+        except ValueError:
+            self._display_message("Erro de Entrada", "Por favor, insira um ID de consulta válido.", is_error=True)
         except requests.exceptions.ConnectionError:
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
             error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
+            if 'response' in locals():
+                try:
+                    error_json = response.json()
+                    error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
+                except json.JSONDecodeError:
+                    error_message += f"\nResposta bruta do Backend: {response.text}"
+            self._display_message("Erro de Requisição", error_message, is_error=True)
+        except Exception as e:
+            self._display_message("Erro Inesperado", f"Ocorreu um erro inesperado: {e}", is_error=True)
+
+    def listar_consultas(self):
+        """Lista todas as consultas e exibe no text_output."""
+        self.text_output.clear()
+        try:
+            response = requests.get(f"{BASE_URL}/consultas/")
+            response.raise_for_status()
+
+            consultas = response.json()
+            if consultas:
+                output_text = "Consultas:\n"
+                for consulta in consultas:
+                    output_text += (
+                        f"  ID: {consulta.get('idConsulta', 'N/A')}, "
+                        f"Motivo: {consulta.get('motivo', 'N/A')}, "
+                        f"Data/Hora: {consulta.get('dataHora', 'N/A')}, "
+                        f"Status: {consulta.get('status', 'N/A')}\n"
+                    )
+                self.text_output.setText(output_text)
+                self._display_message("Sucesso", f"Foram encontradas {len(consultas)} consultas.")
+            else:
+                self.text_output.setText("Nenhuma consulta encontrada.")
+                self._display_message("Informação", "Nenhuma consulta encontrada no sistema.")
+
+        except requests.exceptions.ConnectionError:
+            self._display_message("Erro de Conexão", f"Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em {BASE_URL}", is_error=True)
+        except requests.exceptions.RequestException as e:
+            error_message = f"Ocorreu um erro na requisição: {e}"
+            if 'response' in locals():
                 try:
                     error_json = response.json()
                     error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
@@ -385,23 +426,18 @@ class MainApp(QWidget):
         """Cria um novo prontuário."""
         self.text_output.clear()
         try:
-            # Coleta e valida os dados dos campos da UI
             id_prontuario = int(self.prontuario_id_input.text())
             data_criacao_str = self.prontuario_datacriacao_input.text()
             historico_medico = self.prontuario_historico_input.toPlainText()
             diagnostico = self.prontuario_diagnostico_input.toPlainText()
             id_paciente = int(self.prontuario_idpaciente_input.text())
             tratamento = self.prontuario_tratamento_input.toPlainText()
-            
-            # Campos de exame (opcionais)
-            nome_exame = self.prontuario_exame_nome_input.text()
-            data_exame_str = self.prontuario_exame_data_input.text()
+            exame_nome = self.prontuario_exame_nome_input.text()
+            exame_data = self.prontuario_exame_data_input.text()
 
-            # Validações básicas
-            if not historico_medico or not diagnostico or not tratamento:
-                raise ValueError("Histórico médico, diagnóstico e tratamento são obrigatórios.")
+            if not all([id_prontuario, data_criacao_str, historico_medico, diagnostico, id_paciente, tratamento]):
+                raise ValueError("Todos os campos obrigatórios do prontuário devem ser preenchidos.")
 
-            # Monta o payload JSON
             prontuario_data = {
                 "idProntuario": id_prontuario,
                 "dataCriacao": data_criacao_str,
@@ -411,25 +447,19 @@ class MainApp(QWidget):
                 "tratamento": tratamento,
                 "exames": []
             }
-            
-            # Adiciona exame se fornecido
-            if nome_exame and data_exame_str:
-                prontuario_data["exames"] = [{
-                    "nomeExame": nome_exame,
-                    "dataRealizacao": data_exame_str
-                }]
+
+            if exame_nome and exame_data:
+                prontuario_data["exames"].append({"nome": exame_nome, "data": exame_data})
 
             headers = {"Content-Type": "application/json"}
-            
-            # Envia a requisição POST para o backend
             response = requests.post(f"{BASE_URL}/prontuarios/", json=prontuario_data, headers=headers)
             response.raise_for_status()
 
             if response.status_code == 201:
                 self._display_message("Sucesso", "Prontuário criado com sucesso!")
                 self.text_output.setText(f"Prontuário Criado:\n{json.dumps(response.json(), indent=2)}")
-                # Limpa os campos após sucesso
                 self._clear_prontuario_fields()
+                self.listar_prontuarios() # Adicionado: Chama a função de listar após criar
             else:
                 self._display_message("Erro", f"Erro ao criar prontuário: {response.text}", is_error=True)
 
@@ -439,7 +469,7 @@ class MainApp(QWidget):
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
             error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
+            if 'response' in locals():
                 try:
                     error_json = response.json()
                     error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
@@ -474,6 +504,7 @@ class MainApp(QWidget):
                 self._display_message("Sucesso", "Prontuário atualizado com sucesso!")
                 self.text_output.setText(f"Prontuário Atualizado:\n{json.dumps(response.json(), indent=2)}")
                 self._clear_prontuario_crud_fields()
+                self.listar_prontuarios() # Adicionado: Chama a função de listar após atualizar
             else:
                 self._display_message("Erro", f"Erro ao atualizar prontuário: {response.text}", is_error=True)
 
@@ -483,7 +514,7 @@ class MainApp(QWidget):
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
             error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
+            if 'response' in locals():
                 try:
                     error_json = response.json()
                     error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
@@ -498,49 +529,20 @@ class MainApp(QWidget):
         self.text_output.clear()
         try:
             id_prontuario = int(self.prontuario_id_crud_input.text())
-            
+
             response = requests.delete(f"{BASE_URL}/prontuarios/{id_prontuario}")
             response.raise_for_status()
 
-            if response.status_code == 200:
+            if response.status_code == 204:
                 self._display_message("Sucesso", "Prontuário deletado com sucesso!")
-                self.text_output.setText(f"Prontuário Deletado (ID: {id_prontuario})")
+                self.text_output.setText(f"Prontuário Deletado: ID {id_prontuario}")
                 self._clear_prontuario_crud_fields()
+                self.listar_prontuarios() # Adicionado: Chama a função de listar após deletar
             else:
                 self._display_message("Erro", f"Erro ao deletar prontuário: {response.text}", is_error=True)
 
-        except ValueError as e:
-            self._display_message("Erro de Entrada", f"ID do Prontuário inválido: {e}", is_error=True)
-        except requests.exceptions.ConnectionError:
-            self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
-        except requests.exceptions.RequestException as e:
-            error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
-                try:
-                    error_json = response.json()
-                    error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
-                except json.JSONDecodeError:
-                    error_message += f"\nResposta bruta do Backend: {response.text}"
-            self._display_message("Erro de Requisição", error_message, is_error=True)
-        except Exception as e:
-            self._display_message("Erro Inesperado", f"Ocorreu um erro inesperado: {e}", is_error=True)
-
-    def listar_consultas(self):
-        """Lista todas as consultas."""
-        self.text_output.clear()
-        try:
-            response = requests.get(f"{BASE_URL}/consultas/")
-            response.raise_for_status()
-            
-            consultas = response.json()
-            if consultas:
-                formatted_consultas = "\n".join([json.dumps(c, indent=2) for c in consultas])
-                self.text_output.setText(f"Consultas Encontradas:\n{formatted_consultas}")
-                self._display_message("Sucesso", f"Foram encontradas {len(consultas)} consultas.")
-            else:
-                self.text_output.setText("Nenhuma consulta encontrada.")
-                self._display_message("Informação", "Nenhuma consulta encontrada no sistema.")
-                
+        except ValueError:
+            self._display_message("Erro de Entrada", "Por favor, insira um ID de prontuário válido.", is_error=True)
         except requests.exceptions.ConnectionError:
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
@@ -556,26 +558,26 @@ class MainApp(QWidget):
             self._display_message("Erro Inesperado", f"Ocorreu um erro inesperado: {e}", is_error=True)
 
     def listar_prontuarios(self):
-        """Lista todos os prontuários."""
+        """Lista todos os prontuários e exibe no text_output."""
         self.text_output.clear()
         try:
             response = requests.get(f"{BASE_URL}/prontuarios/")
             response.raise_for_status()
-            
+
             prontuarios = response.json()
             if prontuarios:
-                formatted_prontuarios = "\n".join([json.dumps(p, indent=2) for p in prontuarios])
-                self.text_output.setText(f"Prontuários Encontrados:\n{formatted_prontuarios}")
-                self._display_message("Sucesso", f"Foram encontrados {len(prontuarios)} prontuários.")
+                output_text = "Prontuários:\n"
+                for prontuario in prontuarios:
+                    output_text += f"  ID: {prontuario.get("idProntuario")}, Historico: {prontuario.get("historicoMedico")}, Data Criação: {prontuario.get("dataCriacao")}, Paciente: {prontuario.get("idPaciente")}\n"
+                self.text_output.setText(output_text)
             else:
                 self.text_output.setText("Nenhum prontuário encontrado.")
-                self._display_message("Informação", "Nenhum prontuário encontrado no sistema.")
-                
+
         except requests.exceptions.ConnectionError:
             self._display_message("Erro de Conexão", "Não foi possível conectar ao servidor Flask. Verifique se o backend está rodando em " + BASE_URL, is_error=True)
         except requests.exceptions.RequestException as e:
             error_message = f"Ocorreu um erro na requisição: {e}"
-            if '\'response\'' in locals():
+            if 'response' in locals():
                 try:
                     error_json = response.json()
                     error_message += f"\nDetalhes do Backend:\n{json.dumps(error_json, indent=2)}"
@@ -586,25 +588,22 @@ class MainApp(QWidget):
             self._display_message("Erro Inesperado", f"Ocorreu um erro inesperado: {e}", is_error=True)
 
     def _clear_consulta_fields(self):
-        """Limpa os campos de consulta após criação bem-sucedida."""
         self.consulta_id_input.clear()
         self.consulta_motivo_input.clear()
-        self.consulta_datahora_input.setText(datetime.now().isoformat('timespec=\'seconds\''))
+        self.consulta_datahora_input.setText(datetime.now().isoformat(timespec= 'seconds')) # Resetar para data/hora atual
         self.consulta_idmedico_input.clear()
         self.consulta_idpaciente_input.clear()
         self.consulta_status_input.setText("Agendada")
 
     def _clear_consulta_crud_fields(self):
-        """Limpa os campos de CRUD de consulta após operação bem-sucedida."""
         self.consulta_id_crud_input.clear()
         self.consulta_motivo_update_input.clear()
         self.consulta_datahora_update_input.clear()
         self.consulta_status_update_input.clear()
 
     def _clear_prontuario_fields(self):
-        """Limpa os campos de prontuário após criação bem-sucedida."""
         self.prontuario_id_input.clear()
-        self.prontuario_datacriacao_input.setText(datetime.now().isoformat('timespec=\'seconds\''))
+        self.prontuario_datacriacao_input.setText(datetime.now().isoformat(timespec='seconds')) # Resetar para data/hora atual
         self.prontuario_historico_input.clear()
         self.prontuario_diagnostico_input.clear()
         self.prontuario_idpaciente_input.clear()
@@ -613,14 +612,15 @@ class MainApp(QWidget):
         self.prontuario_exame_data_input.clear()
 
     def _clear_prontuario_crud_fields(self):
-        """Limpa os campos de CRUD de prontuário após operação bem-sucedida."""
         self.prontuario_id_crud_input.clear()
         self.prontuario_historico_update_input.clear()
         self.prontuario_diagnostico_update_input.clear()
         self.prontuario_tratamento_update_input.clear()
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     app = QApplication(sys.argv)
     main_app = MainApp()
     main_app.show()
     sys.exit(app.exec_())
+
