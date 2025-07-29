@@ -9,9 +9,7 @@ Passo a passo para a execução do backend e frontend desse código(Linux-Ubuntu
 
 3) O usuário deve se direcionar até a pasta em questão onde se encontra o código e executar o comando para a contrução do Banco de Dados não relacional -> docker-compose up --build
 
-4) Nesta próxima etapa o usuário deve no terminal rodar o código do backend(app.py) -> python3 app.py
-
-5) Depois disso o usuário deve instalar esses pacotes via prompt de comando: sudo apt install libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libx
+4) Depois disso o usuário deve instalar esses pacotes via prompt de comando: sudo apt install libxcb-xinerama0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libx
 cb-render-util0 libxcb-shape0 libxcb-sync1 libxcb-util1 libxcb-xfixes0 libxcb-xkb1 libxkbcommon-x11-0 libfontconfig1
 
-6) Por fim deve-se executar o comando  em outro terminal para ter acesso ao frontend -> python3 main_frontend.py
+5) Por fim deve-se executar o comando  em outro terminal para ter acesso ao frontend -> python3 main_frontend.py
