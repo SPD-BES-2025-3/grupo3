@@ -1,13 +1,26 @@
 from models.consulta import Consulta
 from repositories.consulta_repository import ConsultaRepository # Importa o novo repositório
 from typing import List, Optional
+from mongoengine.errors import NotUniqueError
+
 class ConsultaService:
 
     @staticmethod
     def criar_consulta(data: dict) -> Consulta:
-        """Cria e salva uma nova consulta."""
-        consulta = Consulta(**data) # Instancia o modelo
-        return ConsultaRepository.save(consulta) # Usa o repositório para salvar
+        id_consulta = data.get("idConsulta")
+        if id_consulta is None:
+            raise ValueError("idConsulta não fornecido nos dados.")
+
+        consulta_existente = ConsultaRepository.find_by_id(id_consulta)
+        if consulta_existente:
+            raise ValueError(f"Consulta com idConsulta {id_consulta} já existe.")
+
+        consulta = Consulta(**data)
+        try:
+            return ConsultaRepository.save(consulta)
+        except NotUniqueError as e:
+            raise ValueError(f"Consulta com idConsulta {id_consulta} já existe.") from e
+
 
     @staticmethod
     def listar_consultas() -> List[Consulta]:
