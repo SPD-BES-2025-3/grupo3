@@ -2,29 +2,42 @@ from flask import Blueprint, request, jsonify
 from services.consulta_services import ConsultaService
 from dto.consulta_dto import ConsultaCreateDTO, ConsultaUpdateDTO # Importe os DTOs
 from pydantic import ValidationError # Importe ValidationError do Pydantic
-
+import traceback
 consulta_bp = Blueprint('consulta_bp', __name__, url_prefix='/consultas')
 
 @consulta_bp.route('/', methods=['POST'])
 def criar_consulta():
     data = request.get_json()
     if not data:
+        print("Erro: Dados da consulta não fornecidos.")
         return jsonify({"erro": "Dados da consulta não fornecidos."}), 400
+
     try:
-        # Valida e converte a entrada JSON para um objeto DTO, depois para um dicionário
-        # Pydantic automaticamente converte a string de data para datetime
-        consulta_data = ConsultaCreateDTO(**data).model_dump() 
+        print(f"DEBUG: Dados JSON recebidos do frontend: {data}") #
+        
+        consulta_data = ConsultaCreateDTO(**data).model_dump()
+        print(f"DEBUG: Dados após validação Pydantic (dataHora deve ser datetime): {consulta_data}") #
+        print(f"DEBUG: Tipo de 'dataHora' após Pydantic: {type(consulta_data.get('dataHora'))}") #
         
         consulta = ConsultaService.criar_consulta(consulta_data)
-        return jsonify(consulta.to_json()), 201
+        print(f"DEBUG: Objeto Consulta retornado pelo Service: {consulta}") #
+        print(f"DEBUG: Tipo de 'dataHora' no objeto Consulta (antes de to_json()): {type(consulta.dataHora)}") #
+
+        json_response_payload = consulta.to_json()
+        print(f"DEBUG: Payload JSON gerado por .to_json(): {json_response_payload}") #
+        print(f"DEBUG: Tipo de 'dataHora' no payload de resposta: {type(json_response_payload.get('dataHora'))}") #
+        traceback.print_exc()
+        return jsonify(json_response_payload), 201
     except ValidationError as e:
-        # Captura erros de validação do Pydantic e retorna 400 Bad Request
+        print("Erro de validação Pydantic:", e) #
         return jsonify({"erro": e.errors()}), 400
     except ValueError as e:
-        # Captura erros de validação nos setters dos modelos (se ainda existirem e forem diferentes)
+        print("Erro de valor (provavelmente do Service/Repository):", e) #
         return jsonify({"erro": str(e)}), 400
     except Exception as e:
-        return jsonify({"erro": f"Erro ao criar consulta: {str(e)}"}), 500
+        print("Erro inesperado ao criar consulta:", e) #
+        traceback.print_exc() # Imprime o traceback completo no console do servidor
+        return jsonify({"erro": f"Erro interno do servidor: {str(e)}"}), 500
 
 @consulta_bp.route('/', methods=['GET'])
 def listar_consultas():
