@@ -27,12 +27,11 @@ services:
       - "5000:5000"
     environment:
       - FLASK_ENV=production
-      - MONGODB_URI=mongodb://admin:password123@mongodb:27017/medical_db?authSource=admin
+      - MONGODB_URI=mongodb://admin:1234@mongodb:27017/medical_db?authSource=admin
       - PYTHONPATH=/app:/app/src
     depends_on:
       - mongodb
     volumes:
-      # Monta o diretório atual (que contém src/) no container
       - .:/app
     working_dir: /app
     networks:
