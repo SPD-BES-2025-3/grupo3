@@ -1,25 +1,48 @@
 from models.consulta import Consulta
-from repositories.consulta_repository import ConsultaRepository # Importa o novo repositório
+from repositories.consulta_repository import ConsultaRepository # Importa o repositório
 from typing import List, Optional
 from mongoengine.errors import NotUniqueError
 
 class ConsultaService:
 
     @staticmethod
+    def _gerar_proximo_id() -> int:
+        """Gera o próximo ID disponível, começando em 1."""
+        consultas_existentes = ConsultaRepository.find_all()
+        if not consultas_existentes:
+            return 1
+        
+        # Obtém todos os IDs existentes e ordena
+        ids_existentes = sorted([consulta.idConsulta for consulta in consultas_existentes])
+        
+        # Encontra o menor ID disponível
+        proximo_id = 1
+        for id_atual in ids_existentes:
+            if proximo_id < id_atual:
+                break
+            proximo_id = id_atual + 1
+        
+        return proximo_id
+
+    @staticmethod
     def criar_consulta(data: dict) -> Consulta:
-        id_consulta = data.get("idConsulta")
-        if id_consulta is None:
-            raise ValueError("idConsulta não fornecido nos dados.")
+        # Remove idConsulta dos dados se estiver presente (será gerado automaticamente)
+        data_copia = data.copy()
+        data_copia.pop("idConsulta", None)
+        
+        # Gera automaticamente o próximo ID disponível
+        id_consulta = ConsultaService._gerar_proximo_id()
+        data_copia["idConsulta"] = id_consulta
 
-        consulta_existente = ConsultaRepository.find_by_id(id_consulta)
-        if consulta_existente:
-            raise ValueError(f"Consulta com idConsulta {id_consulta} já existe.")
-
-        consulta = Consulta(**data)
+        consulta = Consulta(**data_copia)
         try:
             return ConsultaRepository.save(consulta)
         except NotUniqueError as e:
-            raise ValueError(f"Consulta com idConsulta {id_consulta} já existe.") from e
+            # Em caso de conflito (muito raro), tenta novamente com o próximo ID
+            id_consulta = ConsultaService._gerar_proximo_id()
+            data_copia["idConsulta"] = id_consulta
+            consulta = Consulta(**data_copia)
+            return ConsultaRepository.save(consulta)
 
 
     @staticmethod
