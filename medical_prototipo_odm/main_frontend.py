@@ -17,7 +17,7 @@ class MainApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Sistema de Gestão de Consultas e Prontuários")
-        self.setGeometry(100, 100, 1200, 800) # Aumenta o tamanho da janela para acomodar mais conteúdo
+        self.setGeometry(100, 100, 1200, 800) 
         self.init_ui()
 
     def init_ui(self):
@@ -55,9 +55,7 @@ class MainApp(QWidget):
         criar_group = QGroupBox("Criar Nova Consulta")
         criar_layout = QFormLayout()
         
-        self.consulta_id_input = QLineEdit()
-        self.consulta_id_input.setPlaceholderText("ID único da Consulta (número inteiro)")
-        criar_layout.addRow("ID da Consulta:", self.consulta_id_input)
+        # Campo ID da consulta removido - será gerado automaticamente pelo backend
 
         self.consulta_motivo_input = QLineEdit()
         self.consulta_motivo_input.setPlaceholderText("Ex: Dor de cabeça, Check-up")
@@ -250,8 +248,7 @@ class MainApp(QWidget):
         """Cria uma nova consulta."""
         self.text_output.clear()
         try:
-            # Coleta e valida os dados dos campos da UI
-            id_consulta = int(self.consulta_id_input.text())
+            # Coleta e valida os dados dos campos da UI (ID será gerado automaticamente)
             motivo = self.consulta_motivo_input.text()
             data_hora_str = self.consulta_datahora_input.text()
             id_medico = int(self.consulta_idmedico_input.text())
@@ -264,9 +261,8 @@ class MainApp(QWidget):
             if status not in ["Agendada", "Realizada", "Cancelada"]:
                 raise ValueError("Status inválido. Escolha entre \'Agendada\', \'Realizada\' ou \'Cancelada\'.")
 
-            # Monta o payload JSON
+            # Monta o payload JSON (sem idConsulta - será gerado automaticamente)
             consulta_data = {
-                "idConsulta": id_consulta,
                 "dataHora": data_hora_str,
                 "motivo": motivo,
                 "idMedico": id_medico,
@@ -588,9 +584,10 @@ class MainApp(QWidget):
             self._display_message("Erro Inesperado", f"Ocorreu um erro inesperado: {e}", is_error=True)
 
     def _clear_consulta_fields(self):
-        self.consulta_id_input.clear()
+        """Limpa os campos de entrada da consulta após criação bem-sucedida."""
+        # Campo ID removido - não precisa ser limpo
         self.consulta_motivo_input.clear()
-        self.consulta_datahora_input.setText(datetime.now().isoformat(timespec= 'seconds')) # Resetar para data/hora atual
+        self.consulta_datahora_input.setText(datetime.now().isoformat(timespec='seconds'))
         self.consulta_idmedico_input.clear()
         self.consulta_idpaciente_input.clear()
         self.consulta_status_input.setText("Agendada")
