@@ -1,0 +1,25 @@
+FROM eclipse-temurin:21-jdk-jammy
+
+# Diretório de trabalho
+WORKDIR /app
+
+# Instala wget e unzip, baixa e extrai o JavaFX
+RUN apt-get update && \
+    apt-get install -y wget unzip && \
+    wget https://download2.gluonhq.com/openjfx/21/openjfx-21_linux-x64_bin-sdk.zip && \
+    unzip openjfx-21_linux-x64_bin-sdk.zip -d /opt && \
+    rm openjfx-21_linux-x64_bin-sdk.zip
+
+# Instala bibliotecas necessárias para JavaFX em sistemas baseados em Debian/Ubuntu
+RUN apt-get update && \
+    apt-get install -y libgtk-3-0 libatk-bridge2.0-0 libfontconfig1 libfreetype6 libxrandr2 libxi6 libxkbcommon0 libgdk-pixbuf2.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 libglib2.0-0 libjpeg-turbo8 libtiff5 libgif7 libavcodec-extra58 libavformat58 libavutil56 libswscale5 libssl-dev libcurl4-openssl-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copia seu código
+COPY . .
+
+# Compila o projeto
+RUN javac --module-path /opt/javafx-sdk-21/lib --add-modules javafx.controls,javafx.fxml view/AppView.java
+
+# Executa o projeto
+CMD ["java", "--module-path", "/opt/javafx-sdk-21/lib", "--add-modules", "javafx.controls,javafx.fxml", "view.AppView"]

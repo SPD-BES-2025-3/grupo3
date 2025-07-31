@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPubSub;
 
-public class Main {
+public class App {
 
     // Defina os nomes dos canais aqui
     private static final String CANAL_SISTEMA_1 = "eventos:sistema1";

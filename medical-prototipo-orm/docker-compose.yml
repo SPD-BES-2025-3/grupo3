@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysql:
     container_name: 'guide-mysql'
@@ -9,3 +11,24 @@ services:
       - 'MYSQL_USER=myuser'
     ports:
       - '3306:3306'
+    networks:
+      - backend
+
+  app:
+    build:
+      context: . 
+    container_name: spring-app
+    ports:
+      - '8083:8083'
+    depends_on:
+      - mysql
+    networks:
+      - backend
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/mydatabase
+      - SPRING_DATASOURCE_USERNAME=myuser
+      - SPRING_DATASOURCE_PASSWORD=secret
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+networks:
+  backend:
