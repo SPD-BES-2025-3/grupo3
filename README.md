@@ -39,7 +39,7 @@ mvn archetype:generate \
 
 ## Executando a Aplicação com Docker Compose
 
-### ORM e View (Teste)
+### ORM (MySQL) e View (Teste)
 
 1. Em um terminal faça:
 
