@@ -64,9 +64,10 @@ Agora está pronto para testar a aplicação.
 <td align="center">
       <img src="diagramas/fluxo backend frontend.jpeg" alt="Descrição do Fluxo" width="100%" />
       
-## Comunicação Entre Bancos
+## Comunicação Entre Bancos atual  
 <img src="diagramas/comunicacao entre bancos.jpeg" alt="Comunicação entre Bancos de Dados" width="100%" />
-
+## Crud Consulta Prontuário atual
+<img src="diagramas/crud consulta prontuario final.jpeg" alt="CRUD Consulta Prontuário" width="100%" />
 ## Diagrama de classes atual
 
 <td align="center">
