@@ -69,6 +69,7 @@ Agora está pronto para testar a aplicação.
 
 ## Crud Consulta Prontuário atual
 <img src="diagramas/crud consulta prontuario final.jpeg" alt="CRUD Consulta Prontuário" width="100%" />
+
 ## Diagrama de classes atual
 
 <td align="center">
