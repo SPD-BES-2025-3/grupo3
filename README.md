@@ -59,10 +59,11 @@ Agora está pronto para testar a aplicação.
 <td align="center">
       <img src="diagramas/Diagrama de Componentes Correto.jpg" alt="(a)" width="100%" /><br/>
 
-## Diagrama de sequencia atual
+## Fluxo BackEnd FrontEnd atual
 
 <td align="center">
-      <img src="diagramas/Diagrama de Sequencia.drawio 2 .png" alt="(a)" width="100%" /><br/>
+      <img src="fluxo backend frontend.jpeg" alt="(a)" width="100%" /><br/>
+      
 
 ## Diagrama de classes atual
 
