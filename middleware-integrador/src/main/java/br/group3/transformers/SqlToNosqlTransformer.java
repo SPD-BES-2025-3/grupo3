@@ -10,7 +10,8 @@ import org.bson.Document;
 public class SqlToNosqlTransformer {
     
     // Informações de conexão com o MongoDB (atualizadas)
-    private static final String MONGO_URI = "mongodb://localhost:27017/";
+    // Formato: mongodb://<usuario>:<senha>@<host>:<porta>/
+    private static final String MONGO_URI = "mongodb://admin:1234@localhost:27017/";
     private static final String DB_NAME = "mongodb"; // <== ATUALIZADO
     
     // Você ainda precisa confirmar o nome da coleção com a equipe!

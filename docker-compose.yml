@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   # Serviço MySQL para o projeto ORM
   mysql-db:
@@ -11,6 +12,8 @@ services:
       MYSQL_ROOT_PASSWORD: 'verysecret'
     ports:
       - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
     networks:
       - app-network
 
@@ -18,12 +21,17 @@ services:
   mongo-db:
     image: mongo:7.0
     container_name: mongo-db-container
+    restart: unless-stopped
     ports:
       - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: 1234 # Senha correta
+      MONGO_INITDB_ROOT_PASSWORD: 1234
       MONGO_INITDB_DATABASE: medical_db
+    # O volume do mongo-init.js agora precisa do caminho relativo a partir da raiz
+    volumes:
+      - mongodb-data:/data/db
+      - ./medical_prototipo_odm/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
     networks:
       - app-network
 
@@ -35,6 +43,34 @@ services:
       - "6379:6379"
     networks:
       - app-network
+
+  # Serviço Backend Flask do projeto ODM
+  backend-odm:
+    build:
+      # MUDANÇA IMPORTANTE: O contexto agora aponta para a pasta do projeto ODM
+      context: ./medical_prototipo_odm
+      dockerfile: Dockerfile
+    container_name: backend-odm-container
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGODB_URI=mongodb://admin:1234@mongo-db:27017/medical_db?authSource=admin
+      - FLASK_ENV=development
+      - PYTHONPATH=/app
+    depends_on:
+      - mongo-db
+    # MUDANÇA IMPORTANTE: O volume agora mapeia a subpasta do ODM
+    volumes:
+      - ./medical_prototipo_odm:/app
+    working_dir: /app
+    networks:
+      - app-network
+
+# Define os volumes persistentes
+volumes:
+  mysql-data:
+  mongodb-data:
 
 # Define a rede compartilhada para todos os serviços
 networks:
