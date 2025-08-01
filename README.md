@@ -57,7 +57,7 @@ Agora está pronto para testar a aplicação.
 ## Diagrama de componentes atual
 
 <td align="center">
-      <img src="diagramas/Diagrama de Componentes Correto.jpg" alt="(a)" width="100%" /><br/>
+      <img src="diagramas/Diagrama de Componentes.png" alt="(a)" width="100%" /><br/>
 
 ## Fluxo BackEnd FrontEnd atual
 
