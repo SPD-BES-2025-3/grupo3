@@ -66,6 +66,7 @@ Agora está pronto para testar a aplicação.
       
 ## Comunicação Entre Bancos atual  
 <img src="diagramas/comunicacao entre bancos.jpeg" alt="Comunicação entre Bancos de Dados" width="100%" />
+
 ## Crud Consulta Prontuário atual
 <img src="diagramas/crud consulta prontuario final.jpeg" alt="CRUD Consulta Prontuário" width="100%" />
 ## Diagrama de classes atual
