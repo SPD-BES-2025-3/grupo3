@@ -1,6 +1,6 @@
 # grupo3
-Repositório do grupo 3
 
+Repositório do grupo 3
 
 primeiro, cheque as versões do java e maven para se casar com o que temos atualmente
 
@@ -8,9 +8,11 @@ primeiro, cheque as versões do java e maven para se casar com o que temos atual
 Java = 21
 Maven = 3.8.7
 ```
+
 Configuração:
 
 Baixando os pacotes necessários
+
 ```
 sudo apt update
 sudo apt install openjdk-17-jdk-headless
@@ -35,24 +37,40 @@ mvn archetype:generate \
 
 ```
 
+## Executando a Aplicação com Docker Compose
+
+### ORM (MySQL) e View (Teste)
+
+1. Em um terminal faça:
+
+```
+cd medical-prototipo-orm
+docker compose up
+```
+
+Agora, acesse o bluej e abra a pasta medical-prototipo-views-controller.
+
+Em seguida entre em view e execute o AppView.java.
+
+Agora está pronto para testar a aplicação.
 
 ## Diagrama de componentes atual
+
 <td align="center">
-      <img src="diagramas/Diagrama de Componentes Correto.jpg" alt="(a)" width="100%" /><br/>
+      <img src="diagramas/Diagrama de Componentes.png" alt="(a)" width="100%" /><br/>
 
+## Fluxo BackEnd FrontEnd atual
 
-## Diagrama de sequencia atual
 <td align="center">
-      <img src="diagramas/Diagrama de Sequencia.drawio 2 .png" alt="(a)" width="100%" /><br/>
+      <img src="diagramas/fluxo backend frontend.jpeg" alt="Descrição do Fluxo" width="100%" />
+      
+## Comunicação Entre Bancos atual  
+<img src="diagramas/comunicacao entre bancos.jpeg" alt="Comunicação entre Bancos de Dados" width="100%" />
 
+## Crud Consulta Prontuário atual
+<img src="diagramas/crud consulta prontuario final.jpeg" alt="CRUD Consulta Prontuário" width="100%" />
 
 ## Diagrama de classes atual
 
 <td align="center">
       <img src="diagramas/Diagrama de classes 4.png" alt="(a)" width="100%" /><br/>
-      
-
-
-
-
-

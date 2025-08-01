@@ -1,0 +1,11 @@
+services:
+  java-app:
+    build:
+      context: .
+    container_name: meu-app-view
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    ports:
+      - "8080:8089" # pode remover se não for servidor web
