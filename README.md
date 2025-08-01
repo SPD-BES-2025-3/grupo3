@@ -64,6 +64,8 @@ Agora está pronto para testar a aplicação.
 <td align="center">
       <img src="diagramas/fluxo backend frontend.jpeg" alt="Descrição do Fluxo" width="100%" />
       
+## Comunicação Entre Bancos
+<img src="diagramas/comunicacao entre bancos.jpeg" alt="Comunicação entre Bancos de Dados" width="100%" />
 
 ## Diagrama de classes atual
 
