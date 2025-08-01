@@ -62,7 +62,7 @@ Agora está pronto para testar a aplicação.
 ## Fluxo BackEnd FrontEnd atual
 
 <td align="center">
-      <img src="fluxo backend frontend.jpeg" alt="(a)" width="100%" /><br/>
+      <img src="diagramas/fluxo backend frontend.jpeg" alt="Descrição do Fluxo" width="100%" />
       
 
 ## Diagrama de classes atual
